@@ -12,11 +12,7 @@ function dbAuth() {
   }
 }
 exports.getEvents = (req, res) => {
-  // if(!req.params.userId){
-  //     res.status(400).send('Invalid Request')
-  // }
   dbAuth();
-  //   .where('userId', '==', req.params.userId)
   db.collection("events")
     .get()
     .then((collection) => {
@@ -31,9 +27,6 @@ exports.getEvents = (req, res) => {
 };
 
 exports.postEvent = (req, res) => {
-  // if (!req.body || !req.body.item || !req.body.userId || !req.params.userId) {
-  //   res.status(400).send("Invalid request");
-  // }
   dbAuth();
   let newEvent = req.body;
   let now = admin.firestore.FieldValue.serverTimestamp();
@@ -67,7 +60,6 @@ exports.deleteEvent = (req, res) => {
   dbAuth();
   db.collection("events")
     .doc(req.params.eventId)
-    // .where("userId", "==", req.params.userId)
     .delete()
     .then(() => this.getEvents(req, res))
     .catch((err) => res.status(500).send("DELETE FAILED: " + err));
@@ -110,20 +102,12 @@ exports.getSingleEvent = (req, res) => {
   }
   console.log(req.params.eventId);
   dbAuth();
-  //   .where('userId', '==', req.params.userId)
   db.collection("events")
     .doc(req.params.eventId)
     .get()
     .then((doc) => {
       let event = doc.data();
       event.id = doc.id;
-      res.status(200).json({
-        status: 'success',
-        data: event,
-        message: 'Events loaded successfully',
-        statusCode: 200
-      })
-
       res.status(200).json(event);
     })
 
